@@ -5,7 +5,6 @@ import { contractAddr } from "../utils/Utils";
 import "./styles.css";
 
 const Create = () => {
-  const [currentBlockHeight, setCurrentBlockHeight] = useState(0);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -20,7 +19,7 @@ const Create = () => {
   const navigate = useNavigate();
   const [duration, setDuration] = useState(0);
 
-  const getCurrentBlockHeight = async () => {
+  const getCurrentBlockHeight = async ()  => {
     try {
       const blockHeightResponse = await fetch(
         "http://3.143.254.222:26657/abci_info",
@@ -35,27 +34,33 @@ const Create = () => {
         throw new Error(`Error! status: ${blockHeightResponse.status}`);
       }
       const blockHeightResult = await blockHeightResponse.json();
-      setCurrentBlockHeight(
-        parseInt(blockHeightResult.result.response.last_block_height)
-      );
-      return;
+      // setCurrentBlockHeight(
+      //   parseInt(blockHeightResult.result.response.last_block_height)
+      // );
+      return Number(blockHeightResult.result.response.last_block_height);
     } catch (err) {
       console.log(err);
+      return -1;
     }
   };
+
+  const getDuration = async () => {
+    let result = await (await fetch(`http://127.0.0.1:3001/poll/duration/${duration}`)).json();
+    return result;
+  }
 
   const onCreate = async () => {
     setErrorMessage("");
     setIsInteractionLoading(true);
     let cosmJs = new CosmJsFactory(window.chainStore.current);
-    getCurrentBlockHeight().then(() =>
-      setFormData((prev) => {
-        let temp = prev;
-        temp.start_height = currentBlockHeight;
-        temp.end_height = currentBlockHeight + duration;
-        return temp;
-      })
-    );
+    let fetchDuration = await getDuration();
+    console.log(fetchDuration);
+    setFormData((prev) => {
+      let temp = prev;
+      temp.start_height = fetchDuration.start_height;
+      temp.end_height = fetchDuration.end_height;
+      return temp;
+    })
     const data = {
       create_poll: formData,
     };
@@ -112,7 +117,7 @@ const Create = () => {
         <textarea
           placeholder="Please input proposal's description..."
           id="description"
-          rows={20}
+          rows={13}
           onChange={onChange}
           required
         ></textarea>
@@ -168,12 +173,12 @@ const Create = () => {
           with the vote
         </p>
         <p>
-          + <strong>pollQuorum</strong> = (<strong>totalVoteTokens</strong> /{" "}
+          + <strong>resultQuorum</strong> = (<strong>totalVoteTokens</strong> /{" "}
           <strong>totalStakeTokens</strong>) * 100% = agreement percentage that
           the proposal has to achieve to get passed
         </p>
         <p>
-          + <strong>resultQuorum</strong> = agreement percentage that the
+          + <strong>pollQuorum</strong> = agreement percentage that the
           proposal achieve as the result
         </p>
         <p>- A passed proposal is a proposal achieves the below conditions:</p>

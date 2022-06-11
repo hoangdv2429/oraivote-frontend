@@ -1,14 +1,21 @@
 .proposals-container {
+    margin-top: 1rem;
     padding: 0 10rem;
 }
 
 .proposal-container {
+    background-color: var(--card-color);
     border: 1px solid #00000005;
     border-radius: 0.5rem;
     box-shadow: 0px 2px 4px 0 rgba(0, 0, 0, .08);
     cursor: pointer;
     margin: 1rem 0;
     padding: 1rem 1rem;
+}
+
+.proposal-container:hover {
+    background-color: var(--card-color-hover);
+    box-shadow: 0px 10px 20px 0 rgba(195, 195, 195, 0.12);
 }
 
 .proposal-title {
@@ -26,7 +33,6 @@
 }
 
 .proposal-status {
-    background-color: var(--color-green);
     border-radius: 1rem;
     color: var(--color-white);
     font-size: 0.8rem;
@@ -34,9 +40,22 @@
     width: fit-content;
 }
 
+.proposal-closed {
+    background-color: var(--color-red);
+}
+
+.proposal-active {
+    background-color: var(--color-green);
+}
+
 .proposal-container-content {
     align-items: center;
     display: flex;
+}
+
+.proposals-container-content {
+    height: 33rem;
+    overflow-y: auto;
 }
 
 .proposal-duration {
@@ -51,11 +70,15 @@
 .proposals-container-header {
     align-items: center;
     display: grid;
-    grid-template-columns: 10% 60% 15%;
+    grid-template-columns: 10% 50% 20%;
     gap: 5%;
     justify-content: space-between;
 }
 
 .proposals-search-not-found {
     text-align: center;
+}
+
+.proposals-total {
+    color:rgba(255, 255, 255, 0.4);
 }

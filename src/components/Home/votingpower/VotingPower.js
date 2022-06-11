@@ -5,6 +5,7 @@ import CosmJsFactory from "src/lib/cosmjs-factory";
 import Cosmos from "../../../lib/oraiwasmjs"
 import { LoadingOutlined } from "@ant-design/icons";
 import { Spin } from "antd";
+import Proposal from "../proposals/Proposal"
 
 import "./styles.css";
 
@@ -16,6 +17,8 @@ const VotingPower = () => {
   const [isInteractionLoading, setIsInteractionLoading] = useState(false);
   const [queryMessage, setQueryMessage] = useState("");
   const [resultJson, setResultJson] = useState({});
+  const [enrolledPolls, setEnrolledPolls] = useState([]);
+  const [createdPolls, setCreatedPolls] = useState([]);
   const [votingPower, setVotingPower] = useState("");
 
   const antIcon = (
@@ -79,6 +82,7 @@ const VotingPower = () => {
     } catch (ex) {
       console.log(ex);
     }
+    window.location.reload();
   }
 
   const onWithdrawToken = async () => {
@@ -103,16 +107,64 @@ const VotingPower = () => {
         handleOptions: { funds: Array(0) },
       });
       console.log("query result: ", queryResult);
-      setResultJson({ data: queryResult });
     } catch (error) {
       setErrorMessage(String(error));
     }
+    window.location.reload();
     setIsInteractionLoading(false);
   }
 
   useEffect(() => {
     queryVotingPower();
   }, [votingPower])
+
+  const onQueryCreatedPolls = async () => {
+    try {
+      setIsInteractionLoading(true);
+      setErrorMessage("");
+      await fetch(`http://127.0.0.1:3001/poll/created-by/${keplrID}`,{
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      })
+      .then((res) => res.json())
+      .then((res) => {
+        setCreatedPolls(res)
+      });
+      setIsInteractionLoading(false);
+    } catch (error) {
+      setErrorMessage(String(error));
+    }
+  }
+
+  useEffect(() => {
+    onQueryCreatedPolls().then(console.log(createdPolls));
+  }, [])
+
+  const onQueryEnrolledPolls = async () => {
+    try {
+      setIsInteractionLoading(true);
+      setErrorMessage("");
+      await fetch(`http://127.0.0.1:3001/poll/wallet/${keplrID}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      })
+      .then((res) => res.json())
+      .then((res) => {
+        setEnrolledPolls(res)
+      });
+      setIsInteractionLoading(false);
+    } catch (error) {
+      setErrorMessage(String(error));
+    }
+  }
+
+  useEffect(() => {
+    onQueryEnrolledPolls().then(console.log(enrolledPolls));
+  }, [])
 
   return (
     <div>
@@ -139,12 +191,40 @@ const VotingPower = () => {
               <div className="token-interaction">
                 <h2>Stake token</h2>
                 <input className="token-input" type="number" id="withdraw-token"></input>
-                <button className="btn btn-secondary" onClick={onWithdrawToken}>Withdraw Token</button>
+                <button className="btn btn-transparent" onClick={onWithdrawToken}>Withdraw Token</button>
               </div>
             </div>
             <div className="proposal-info">
-              <h2>Enrolled Proposals</h2>
-              <h2>Your Proposals</h2>
+              <div>
+                <h2>Enrolled Proposals</h2>
+                <div className="proposals-container-content scrollable">
+                  {
+                    isInteractionLoading
+                      ? <div className="align-center">< Spin indicator={antIcon} /></div >
+                      : enrolledPolls.length === 0 
+                        ? <div>You've not enrolled in any proposal</div> 
+                        : enrolledPolls.map((item, i) => {
+                            return <Proposal data={item} key={i} />
+                        }
+                    )
+                  }
+                </div>
+              </div>
+              <div>
+                <h2>Your Proposals</h2>
+                <div className="proposals-container-content scrollable">
+                  {
+                    isInteractionLoading
+                      ? <div className="align-center">< Spin indicator={antIcon} /></div >
+                      : createdPolls.length === 0
+                        ? <div>You've not enrolled in any proposal</div>
+                        : createdPolls.map((item, i) => {
+                          return <Proposal data={item} key={i} />
+                        }
+                        )
+                  }
+                </div>
+              </div>
             </div>
           </div>
       }

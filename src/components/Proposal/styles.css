@@ -1,11 +1,41 @@
 .poll-detail-container {
+    border-radius: 0.5rem;
+    width: fit-content;
     margin: 0 10rem;
+    background-color: var(--card-color);
+    padding: 2rem 2rem;
+    margin-top: 6rem;
+}
+
+.poll-detail-container h1 {
+    margin: 0;
 }
 
 .btns {
     margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
 }
 
 .btns * {
-    margin-right: 0.5rem;
+    width: 45%;
+    font-size: 1.1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.poll-detail-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.btn-end-poll {
+    margin-left: auto;
+    background-color: var(--color-red);
+    color: var(--color-white);
+}
+
+.weight-input {
+    padding: 0.2rem 0 0.2rem 0.5rem;
+    width: 98%;
 }

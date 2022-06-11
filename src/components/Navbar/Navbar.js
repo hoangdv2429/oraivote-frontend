@@ -1,11 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import CosmJsFactory from "src/lib/cosmjs-factory";
-import { SigningCosmosClient } from '@cosmjs/launchpad'
-
-import logo from "../../assets/images/logo.svg"
+import logo from "../../assets/images/oraivote-logo.png"
 import "./styles.css"
-import { ConsoleSqlOutlined } from '@ant-design/icons';
 
 const Navbar = ({ auth, setAuth }) => {
 

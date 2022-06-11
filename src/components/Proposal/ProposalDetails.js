@@ -5,6 +5,7 @@ import { contractAddr } from '../utils/Utils';
 import "./styles.css"
 
 const PollDetails = () => {
+  let blockHeight = 0;
   const [currentBlockHeight, setCurrentBlockHeight] = useState(0);
   const [mnemonic, setMnemonic] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -41,9 +42,8 @@ const PollDetails = () => {
         throw new Error(`Error! status: ${blockHeightResponse.status}`);
       }
       const blockHeightResult = await blockHeightResponse.json();
-      setCurrentBlockHeight(
-        parseInt(blockHeightResult.result.response.last_block_height)
-      );
+      // setCurrentBlockHeight(parseInt(blockHeightResult.result.response.last_block_height));
+      return parseInt(blockHeightResult.result.response.last_block_height);
     } catch (err) {
       console.log(err);
     }
@@ -80,69 +80,61 @@ const PollDetails = () => {
   }
 
   const handleVote = async (e) => {
-    await getCurrentBlockHeight();
-    if (currentBlockHeight > pollDetail.end_height) {
+    blockHeight = await getCurrentBlockHeight();
+    if (blockHeight > pollDetail.end_height) {
       displayResult();
-      return;
-    }
-    setErrorMessage("");
-    setIsInteractionLoading(true);
-    let cosmJs = new CosmJsFactory(window.chainStore.current);
-    const data = {
-      cast_vote: {
-        poll_id: pollDetail.poll_id,
-        vote: e.target.id,
-        weight: document.getElementById("token-input").value
+    } else {
+      setErrorMessage("");
+      setIsInteractionLoading(true);
+      let cosmJs = new CosmJsFactory(window.chainStore.current);
+      const data = {
+        cast_vote: {
+          poll_id: pollDetail.poll_id,
+          vote: e.target.id,
+          weight: document.getElementById("token-input").value
+        }
+      };
+      console.log(data);
+      try {
+        let finalMessage;
+        if (data) finalMessage = JSON.stringify(data);
+        const queryResult = await cosmJs.current.execute({
+          mnemonic,
+          address: contractAddr,
+          handleMsg: finalMessage,
+          gasAmount: { amount: "0.0025", denom: "orai" },
+          gasLimits: undefined,
+          handleOptions: { funds: Array(0) },
+        });
+        setIsVoted(e.target.id);
+        console.log(queryResult)
+        setResultJson({ data: queryResult });
+      } catch (error) {
+        setErrorMessage(String(error));
       }
-    };
-    console.log(data);
-    try {
-      let finalMessage;
-      if (data) finalMessage = JSON.stringify(data);
-      const queryResult = await cosmJs.current.execute({
-        mnemonic,
-        address: contractAddr,
-        handleMsg: finalMessage,
-        gasAmount: { amount: "0.0025", denom: "orai" },
-        gasLimits: undefined,
-        handleOptions: { funds: Array(0) },
-      });
-      setIsVoted(e.target.id);
-      console.log(queryResult)
-      setResultJson({ data: queryResult });
-    } catch (error) {
-      setErrorMessage(String(error));
+      setIsInteractionLoading(false);
     }
-    setIsInteractionLoading(false);
   }
 
-  const onQuery = async () => {
-    const data = {
-      poll: {
-        poll_id: parseInt(id)
+  const onQuery = () => {
+    fetch(`http://127.0.0.1:3001/poll/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       }
-    }
-    console.log(data);
-    setErrorMessage("");
-    setIsInteractionLoading(true);
-    let cosmJs = new CosmJsFactory(window.chainStore.current);
-    try {
-      let finalMessage = queryMessage;
-      if (data) finalMessage = JSON.stringify(data);
-      const queryResult = await cosmJs.current.query(
-        contractAddr,
-        finalMessage
-      );
-      setPollDetail({ ...queryResult, poll_id: parseInt(id) });
-      setResultJson({ data: queryResult });
-    } catch (error) {
-      setErrorMessage(String(error));
-    }
-    setIsInteractionLoading(false);
-  };
+    })
+      .then((res) => res.json())
+      .then((res) => setPollDetail(res.data));
+  }
+
+  useEffect(() => {
+    onQuery();
+  }, [])
 
   const displayResult = () => {
-    if (currentBlockHeight > pollDetail.end_height) return "The poll is expired";
+    if (blockHeight > pollDetail.end_height) {
+      return "The poll is expired";
+    };
     if (errorMessage) {
       console.log(errorMessage);
       if (errorMessage.search("has not expired") !== -1) {
@@ -156,42 +148,38 @@ const PollDetails = () => {
     }
   }
 
-  useEffect(() => {
-    onQuery().then(() => console.log(pollDetail));
-  }, [queryMessage])
-
   return (
-    <div className="poll-detail-container">
-      <div>
-        <h1>{pollDetail.title}</h1>
-        <p>Description: {pollDetail.description}</p>
-        <p>Status: {pollDetail.status}</p>
-        <p>Created by {pollDetail.creator}</p>
-        <p>Start from block #{pollDetail.start_height} to block #{pollDetail.end_height}</p>
-        <p>Quorum percentage: {pollDetail.quorum_percentage}</p>
-        <div>{displayResult()}</div>
-        {
-          pollDetail.status === "InProgress"
-            ? (
-              keplrID === pollDetail.creator
-                ? <div className="vertical-flex-box btns">
-                  <input className="token-input" type="number" min={1} id="token-input"></input>
-                  <button className="btn btn-primary" id="yes" onClick={handleVote}>Yes</button>
-                  <button className="btn btn-secondary" id="no" onClick={handleVote}>No</button>
-                  <button className="btn btn-primary" onClick={onEndPoll}>End Poll</button>
+    <div className="poll-detail-wrapper">
+      <div className="poll-detail-container">
+        <div>
+          <div className="vertical-flex-box">
+            <h1>{pollDetail.title}</h1>
+            {keplrID === pollDetail.creator && <button className="btn btn-end-poll" onClick={onEndPoll}>End Poll</button>}
+          </div>
+          <p>Description: {pollDetail.description}</p>
+          <p>Status: {pollDetail.status}</p>
+          <p>Created by {pollDetail.creator}</p>
+          <p>Start from block #{pollDetail.start_height} to block #{pollDetail.end_height}</p>
+          <p>Quorum percentage: {pollDetail.quorum_percentage}</p>
+          <div>{displayResult()}</div>
+          {
+            pollDetail.status === "InProgress"
+              ? (
+                <div>
+                    <input className="weight-input" type="number" placeholder='Enter token weight...' min={1} id="token-input"></input>
+                    <div className="vertical-flex-box btns">
+                      <button className="btn btn-primary" id="yes" onClick={handleVote}>Yes</button>
+                      <button className="btn btn-transparent" id="no" onClick={handleVote}>No</button>
+                    </div>
                 </div>
-                : <div className="vertical-flex-box btns">
-                  <input className="token-input" type="number" min={1} id="token-input"></input>
-                  <button className="btn btn-primary" id="yes" onClick={handleVote}>Yes</button>
-                  <button className="btn btn-secondary" id="no" onClick={handleVote}>No</button>
-                </div>
-            )
-            : (
-              <div>The poll is {pollDetail.status === "Passed" ? "passed" : "rejected"}</div>
-            )
-        }
-      </div>
-    </div >
+              )
+              : (
+                <div>The poll is {pollDetail.status === "Passed" ? "passed" : "rejected"}</div>
+              )
+          }
+        </div>
+      </div >
+    </div>
   )
 }
 

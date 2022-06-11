@@ -1,13 +1,20 @@
 :root {
-  --color-primary: #fd2d55;
+  --color-primary: #7664e4;
+  --color-primary-hover: #3b3185;
   --color-secondary: #c5c5c7;
   --color-black: #000000;
   --color-white: #ffffff;
-  --color-green: rgb(0, 180, 0);
+  --color-green: rgb(0, 160, 0);
+  --color-red: rgb(180, 0, 0);
+  --background-color: #0e0314;
+  --card-color: #302737;
+  --card-color-hover: #57277b;
 }
 
 body {
-  background-color: var(--color-white);
+  background-color: var(--background-color);
+  color: var(--color-secondary);
+  overflow-y: hidden;
 }
 
 .vertical-flex-box {
@@ -39,6 +46,11 @@ body {
 .btn-primary {
   background-color: var(--color-primary);
   color: var(--color-white);
+  transition: 0.3s;
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-hover);
 }
 
 .btn-secondary {
@@ -46,10 +58,22 @@ body {
   color: var(--color-black);
 }
 
+.btn-transparent {
+  border: 1px solid var(--color-primary);
+  background: transparent;
+  color: var(--color-white);
+  transition: 0.3s;
+}
+
+.btn-transparent:hover {
+  background: var(--color-primary);
+}
+
 .input-field {
   border-radius: 0.5rem;
   height: 1.5rem;
   text-indent: 0.5rem;
+  padding: 0.2rem;
 }
 
 ul {
@@ -63,4 +87,8 @@ ul {
 
 .full-width {
   width: 100%;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
