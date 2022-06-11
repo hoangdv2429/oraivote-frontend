@@ -1,0 +1,30 @@
+.navbar {
+    padding: 0 10rem;
+}
+
+.nav-logo {
+    height: 2.5rem;
+    margin-right: 1rem;
+}
+
+.nav-item {
+    cursor: pointer;
+    list-style: none;
+}
+
+.navbar-left {
+    align-items: center;
+}
+
+.navbar-right {
+    align-items: center;
+    margin-left: auto;
+}
+
+.navbar-left > ul > li {
+    padding: 0 1rem;
+}
+
+.nav-item:hover {
+    color: var(--color-primary);
+}
