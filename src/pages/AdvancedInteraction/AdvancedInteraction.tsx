@@ -18,10 +18,15 @@ import {
 } from "src/components";
 import { parseGasLimits, processSchema } from "src/lib/utils";
 import "./AdvancedInteraction.css";
+import { cosmos } from "@keplr-wallet/cosmos";
+import Cosmos from "../../lib/oraiwasmjs";
 
 const antIcon = (
   <LoadingOutlined style={{ fontSize: 24, color: "#7954FF" }} spin />
 );
+
+const cosmJS = new Cosmos("http://3.143.254.222:1317", "Oraichain-testnet");
+cosmJS.setBech32MainPrefix("orai");
 
 const AdvancedInteraction = ({ children, updateChain, gasData, mnemonic }) => {
   // const [mnemonic, setMnemonic] = useState("");
@@ -65,6 +70,7 @@ const AdvancedInteraction = ({ children, updateChain, gasData, mnemonic }) => {
     try {
       let finalMessage = queryMessage;
       if (data) finalMessage = JSON.stringify(data);
+      console.log(finalMessage);
       const queryResult = await cosmJs.current.query(
         contractAddr,
         finalMessage
@@ -78,12 +84,50 @@ const AdvancedInteraction = ({ children, updateChain, gasData, mnemonic }) => {
   };
 
   const onHandle = async (data) => {
+    console.log(data);
     setErrorMessage("");
     setIsInteractionLoading(true);
     let cosmJs = new CosmJsFactory(window.chainStore.current);
     try {
       let finalMessage = executeMessage;
       if (data) finalMessage = JSON.stringify(data);
+      // console.log({
+      //   mnemonic,
+      //   address: contractAddr,
+      //   handleMsg: finalMessage,
+      //   gasAmount: { amount: gasData.gasPrice, denom: gasData.gasDenom },
+      //   gasLimits: parseGasLimits(gasData.gasLimits),
+      //   handleOptions: handleOptionsRef.current,
+      // });
+      // console.log(finalMessage);
+
+      // await window.keplr.enable("Oraichain-testnet");
+      // const offlineSigner = window.keplr.getOfflineSigner("Oraichain-testnet");
+
+      // const rawInputs = [
+      //   {
+      //     contractAddr,
+      //     message: Buffer.from(JSON.stringify({ stake_voting_tokens: {} })),
+      //     sentFunds: [{ denom: "orai", amount: "1000" }],
+      //   },
+      // ];
+
+      // const block = await cosmJS.get("/blocks/latest");
+      // const timeoutHeight = parseInt(block.block.header.height) + 100;
+      // try {
+      //   const response = await cosmJS.execute({
+      //     signerOrChild: offlineSigner,
+      //     rawInputs,
+      //     gasLimits: "auto",
+      //     fees: 0,
+      //     timeoutHeight,
+      //     timeoutIntervalCheck: 5000,
+      //   });
+      //   console.log(response);
+      // } catch (ex) {
+      //   console.log(ex);
+      // }
+
       const queryResult = await cosmJs.current.execute({
         mnemonic,
         address: contractAddr,
@@ -123,7 +167,6 @@ const AdvancedInteraction = ({ children, updateChain, gasData, mnemonic }) => {
     }
     setIsInteractionLoading(false);
   };
-
   return (
     <div className="app-body">
       {/* <div className="intro">

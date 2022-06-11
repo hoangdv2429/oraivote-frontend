@@ -50,6 +50,7 @@ const CustomForm = ({ schema, onSubmit }) => {
         // in the case that the form data still returns correct form data => update schema
         if (formData[schemaKey]) {
           schemaObj.current = { [schemaKey]: formData[schemaKey] };
+          console.log({ [schemaKey]: formData[schemaKey] });
           onSubmit({ [schemaKey]: formData[schemaKey] });
           return;
         }

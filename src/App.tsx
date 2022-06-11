@@ -72,6 +72,7 @@ const App = () => {
   const [arrayContract, setArrayContract] = useState([]);
   const [chainName, setChainName] = useState("Oraichain Testnet");
 
+
   // Handle messages sent from the extension to the webview
   const eventHandler = (event: any) => {
     const message = event.data; // The json data that the extension sent
@@ -538,7 +539,10 @@ const App = () => {
                           </GasForm>
                           <CustomForm
                             schema={e?.handleFile}
-                            onSubmit={(data) => onHandle(data, e.contract)}
+                            onSubmit={(data) => {
+                              console.log("3");
+                              onHandle(data, e.contract);
+                            }}
                           />
                         </div>
                       )}
@@ -549,7 +553,10 @@ const App = () => {
                           </div>
                           <CustomForm
                             schema={e?.queryFile}
-                            onSubmit={(data) => onQuery(data, e.contract)}
+                            onSubmit={(data) => {
+                              console.log("1");
+                              onQuery(data, e.contract);
+                            }}
                           />
                         </div>
                       )}
