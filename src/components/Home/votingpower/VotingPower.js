@@ -122,16 +122,16 @@ const VotingPower = () => {
     try {
       setIsInteractionLoading(true);
       setErrorMessage("");
-      await fetch(`http://127.0.0.1:3001/poll/created-by/${keplrID}`,{
+      await fetch(`http://127.0.0.1:3001/poll/created-by/${keplrID}`, {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         }
       })
-      .then((res) => res.json())
-      .then((res) => {
-        setCreatedPolls(res)
-      });
+        .then((res) => res.json())
+        .then((res) => {
+          setCreatedPolls(res)
+        });
       setIsInteractionLoading(false);
     } catch (error) {
       setErrorMessage(String(error));
@@ -152,10 +152,10 @@ const VotingPower = () => {
           'Accept': 'application/json'
         }
       })
-      .then((res) => res.json())
-      .then((res) => {
-        setEnrolledPolls(res)
-      });
+        .then((res) => res.json())
+        .then((res) => {
+          setEnrolledPolls(res)
+        });
       setIsInteractionLoading(false);
     } catch (error) {
       setErrorMessage(String(error));
@@ -197,22 +197,22 @@ const VotingPower = () => {
             <div className="proposal-info">
               <div>
                 <h2>Enrolled Proposals</h2>
-                <div className="proposals-container-content scrollable">
+                <div className="proposals-container-list scrollable">
                   {
                     isInteractionLoading
                       ? <div className="align-center">< Spin indicator={antIcon} /></div >
-                      : enrolledPolls.length === 0 
-                        ? <div>You've not enrolled in any proposal</div> 
+                      : enrolledPolls.length === 0
+                        ? <div>You've not enrolled in any proposal</div>
                         : enrolledPolls.map((item, i) => {
-                            return <Proposal data={item} key={i} />
+                          return <Proposal data={item} key={i} />
                         }
-                    )
+                        )
                   }
                 </div>
               </div>
               <div>
                 <h2>Your Proposals</h2>
-                <div className="proposals-container-content scrollable">
+                <div className="proposals-container-list scrollable">
                   {
                     isInteractionLoading
                       ? <div className="align-center">< Spin indicator={antIcon} /></div >

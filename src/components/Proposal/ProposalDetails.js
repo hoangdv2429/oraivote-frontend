@@ -72,6 +72,7 @@ const PollDetails = () => {
         handleOptions: { funds: Array(0) },
       });
       setResultJson({ data: queryResult });
+      console.log(resultJson)
       document.location.reload(`/proposal/${id}`)
     } catch (error) {
       setErrorMessage(String(error));
@@ -154,7 +155,7 @@ const PollDetails = () => {
         <div>
           <div className="vertical-flex-box">
             <h1>{pollDetail.title}</h1>
-            {keplrID === pollDetail.creator && <button className="btn btn-end-poll" onClick={onEndPoll}>End Poll</button>}
+            {keplrID === pollDetail.creator && pollDetail.status === "InProgress" && <button className="btn btn-end-poll" onClick={onEndPoll}>End Poll</button>}
           </div>
           <p>Description: {pollDetail.description}</p>
           <p>Status: {pollDetail.status}</p>
@@ -166,11 +167,11 @@ const PollDetails = () => {
             pollDetail.status === "InProgress"
               ? (
                 <div>
-                    <input className="weight-input" type="number" placeholder='Enter token weight...' min={1} id="token-input"></input>
-                    <div className="vertical-flex-box btns">
-                      <button className="btn btn-primary" id="yes" onClick={handleVote}>Yes</button>
-                      <button className="btn btn-transparent" id="no" onClick={handleVote}>No</button>
-                    </div>
+                  <input className="weight-input" type="number" placeholder='Enter token weight...' min={1} id="token-input"></input>
+                  <div className="vertical-flex-box btns">
+                    <button className="btn btn-primary" id="yes" onClick={handleVote}>Yes</button>
+                    <button className="btn btn-transparent" id="no" onClick={handleVote}>No</button>
+                  </div>
                 </div>
               )
               : (
