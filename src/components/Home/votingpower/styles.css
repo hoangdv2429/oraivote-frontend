@@ -1,0 +1,38 @@
+.voting-power-container {
+    margin: 0 10rem;
+}
+
+.token-input {
+    padding: 0.2rem 0.5rem 0.2rem 0;
+    height: 1.6rem;
+    border-radius: 0.5rem;
+}
+
+.general-info {
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+.token-interaction-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.token-interaction {
+    margin-bottom: 0.5rem;
+}
+
+.token-interaction * {
+    margin-right: 0.5rem;
+}
+
+.proposal-info {
+    display: grid;
+    grid-template-columns: 45% 45%;
+    gap: 5%;
+}
+
+.scrollable {
+    height: 19rem;
+    overflow-y: auto;
+}

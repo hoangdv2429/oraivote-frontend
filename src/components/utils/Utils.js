@@ -1,0 +1,1 @@
+export const contractAddr = "orai1p2565wvgce7gdg4wkn9gswklnmcaetqsgrk9uz";

@@ -200,43 +200,17 @@ const AdvancedInteraction = ({ children, updateChain, gasData, mnemonic }) => {
             <HandleOptions handleOptionsRef={handleOptionsRef} />
             {_.isEmpty(handleSchema) && (
               <div style={{ marginBottom: "10px" }}>
-                <CustomInput
-                  inputHeader="Execute message"
-                  input={executeMessage}
-                  setInput={setExecuteMessage}
-                  placeholder="eg. {}"
-                />
-                <Button
-                  onClick={() => {
-                    onHandle(null);
-                  }}
-                  className="primary-button"
-                >
-                  Execute
-                </Button>
+                <CustomInput inputHeader="Execute message" input={executeMessage} setInput={setExecuteMessage} placeholder="eg. {}" />
+                <Button onClick={() => { onHandle(null); }} className="primary-button" > Execute </Button>
                 <div style={{ cursor: "pointer", fontFamily: "Courier" }}>
-                  <MyDropZone
-                    setSchema={setHandleSchema}
-                    setJson={null}
-                    dropZoneText={"Upload the schema file"}
-                  />
+                  <MyDropZone setSchema={setHandleSchema} setJson={null} dropZoneText={"Upload the schema file"} />
                 </div>
               </div>
             )}
             {!_.isEmpty(handleSchema) && (
               <div>
-                <CustomForm
-                  schema={handleSchema}
-                  onSubmit={(data) => onHandle(data)}
-                />
-                <Button
-                  onClick={() => {
-                    setHandleSchema({});
-                  }}
-                  className="remove-button"
-                >
-                  Remove schema form
-                </Button>
+                <CustomForm schema={handleSchema} onSubmit={(data) => onHandle(data)}/>
+                <Button onClick={() => { setHandleSchema({}); }} className="remove-button" > Remove schema form </Button>
               </div>
             )}
           </div>
