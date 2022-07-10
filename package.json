@@ -17,7 +17,7 @@
   "scripts": {
     "lint": "eslint . --ext .ts,.tsx",
     "watch": "tsc -watch -p tsconfig.extension.json",
-    "start": "GENERATE_SOURCEMAP=false react-scripts --openssl-legacy-provider start",
+    "start": "GENERATE_SOURCEMAP=false react-scripts start",
     "build": "GENERATE_SOURCEMAP=false react-scripts --max_old_space_size=8192 build"
   },
   "devDependencies": {
@@ -49,6 +49,7 @@
     "@keplr-wallet/stores": "^0.9.6",
     "@keplr-wallet/types": "^0.9.6",
     "@oraichain/cosmosjs": "^0.0.94",
+    "@react-icons/all-files": "^4.1.0",
     "@rjsf/antd": "^3.2.1",
     "@rjsf/core": "^3.2.1",
     "@types/lodash": "^4.14.177",
@@ -64,6 +65,7 @@
     "react-dom": "^17.0.2",
     "react-dropzone": "^11.4.2",
     "react-json-view": "^1.21.3",
+    "react-router-dom": "6",
     "sass": "^1.43.2",
     "shelljs": "^0.8.4",
     "styled-components": "^5.3.3"
